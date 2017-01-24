@@ -1,0 +1,44 @@
+{
+  "description": "Validate all links present within your gitbook",
+  "engines": {
+    "gitbook": "*"
+  },
+  "dependencies": {
+    "node-fetch": "*"
+  },
+  "main": "index.js",
+  "name": "gitbook-plugin-validate-links",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Popog/gitbook-plugin-validate-links.git"
+  },
+  "homepage": "https://github.com/Popog/gitbook-plugin-validate-links",
+  "license": "(MIT OR Apache-2.0)",
+  "bugs": {
+    "url": "https://github.com/Popog/gitbook-plugin-validate-links/issues"
+  },
+  "gitbook": {
+    "properties": {
+      "remote": {
+        "enum": [ "debug", "info", "warn", "error", "disabled" ],
+        "title": "Remote link resolution failure log mode",
+        "description" : "If set to 'disabled', the plugin will not attempt to validate external links.",
+        "default" : "disabled"
+      },
+      "local": {
+        "enum": [ "debug", "info", "warn", "error", "disabled" ],
+        "title": "Internal link resolution failure log mode",
+        "description" : "If set to 'disabled', the plugin will not attempt to validate internal links.",
+        "default" : "warn"
+      },
+      "defaultScheme": {
+        "type": "string",
+        "title": "Scheme to use for Protocol-relative URL",
+        "description" : "What scheme to use to validate urls that don't have one: https://www.paulirish.com/2010/the-protocol-relative-url/",
+        "default" : "https",
+        "pattern": "^[a-z0-9A-Z+.-]+$"
+      }
+    }
+  }
+}
