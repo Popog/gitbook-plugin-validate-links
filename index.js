@@ -1,8 +1,8 @@
-const fetch = require('node-fetch');
-const url = require('url');
+var fetch = require('node-fetch');
+var url = require('url');
 
-const externals = [];
-const internals = [];
+var externals = [];
+var internals = [];
 
 var hasErrors;
 
@@ -21,7 +21,7 @@ function processLink(ctx, link) {
 
         var logger = ctx.log[ctx.config.remote];
         externals.push(fetch(link.href).catch(
-            err => {
+            function(err) {
                 logger.ln('link to "' + link.href +'" on page "' + ctx.pagePath + '" could not be resolved (' + err.message + ')');
                 hasErrors = hasErrors || ctx.config.remote === 'error';
             }
@@ -45,8 +45,8 @@ function processLink(ctx, link) {
 
     // Resolve local file links
     var logger = ctx.log[ctx.config.local];
-    internals.push(output => {
-        Promise.resolve(output.hasFile(link)).then(v => {
+    internals.push(function(output) {
+        Promise.resolve(output.hasFile(link)).then(function(v) {
             if (v) return;
             logger.ln('link to "' + link + '" on page "' + ctx.pagePath + '" could not be resolved');
             hasErrors = hasErrors || ctx.config.local === 'error';
@@ -57,7 +57,7 @@ function processLink(ctx, link) {
 module.exports = {
     hooks: {
         'page': function(page) {
-            const findLinks = /<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g;
+            var findLinks = /<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g;
 
             for (var link; (link = findLinks.exec(page.content)) !== null;) {
                 processLink({
@@ -71,13 +71,13 @@ module.exports = {
             return page;
         },
         'finish': function() {
-            const { output } = this;
+            var output = this.output;
 
             return Promise.all([
               Promise.all(externals),
-              Promise.all(internals.map(f => f(output)))
-            ]).then(errors => { if (hasErrors)
-                throw 'Link resolution contained errors';
+              Promise.all(internals.map(function(f) { return f(output); }))
+            ]).then(function(errors) {
+              if (hasErrors) throw 'Link resolution contained errors';
             });
         }
     },
